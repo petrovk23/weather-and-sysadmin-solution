@@ -1,0 +1,9 @@
+__pycache__/
+.venv/
+.env
+*.pyc
+*.pyo
+*.sqlite3
+weather_tasks/django_app/db.sqlite3
+*.DS_Store
+node_modules/

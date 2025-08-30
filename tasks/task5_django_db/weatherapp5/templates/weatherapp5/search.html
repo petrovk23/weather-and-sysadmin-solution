@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Search – Django (Task 5)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    <div class="container py-4">
+      <a href="/">← Back</a>
+      <h1 class="mb-3">Search: {{ q }}</h1>
+      {% if not res %}
+      <div class="alert alert-warning">City not found.</div>
+      {% else %}
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ res.city }}, {{ res.country|default:'' }}</h5>
+          <p class="card-text">Condition: {{ res.condition }}<br>
+          Temperature: {{ res.temperature_c }}°C<br>
+          Humidity: {{ res.humidity_percent }}%</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+  </html>
+

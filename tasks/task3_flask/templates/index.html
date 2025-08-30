@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Weather – Flask</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    <div class="container py-4">
+      <h1 class="mb-3">Weather – 5 Random Cities</h1>
+
+      <form class="row g-2 mb-3" action="/search" method="post">
+        <div class="col-sm-6">
+          <input class="form-control" type="text" name="q" placeholder="Search city...">
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+        <div class="col-auto">
+          <a class="btn btn-secondary" href="/">Refresh</a>
+        </div>
+      </form>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>City</th>
+            <th>Condition</th>
+            <th>Temp (°C)</th>
+            <th>Humidity (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for it in items %}
+          <tr>
+            <td>{{ it.city }}, {{ it.country or '' }}</td>
+            <td>{{ it.condition }}</td>
+            <td>{{ it.temperature_c }}</td>
+            <td>{{ it.humidity_percent }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% if summary.coldest and summary.avg_temp_c is not none %}
+      <div class="alert alert-info">
+        Coldest: <strong>{{ summary.coldest.city }}</strong> ({{ summary.coldest.temperature_c }}°C)
+        &nbsp;•&nbsp; Average: <strong>{{ '%.1f'|format(summary.avg_temp_c) }}°C</strong>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+  </html>
+
