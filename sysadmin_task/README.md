@@ -29,31 +29,14 @@ Junior SysAdmin Task – Network Segmentation and Control
 - VLAN 910 → 192.168.10.0/24
 Всеки VLAN има SVI/интерфейс на firewall-а: 10.x.0.1/24 (или 192.168.10.1/24)
 
-Схема (ASCII, уточнена)
+Диаграма
 
-               ┌───────────────────┐
-               │     Internet      │
-               └─────────┬─────────┘
-                         │ WAN
-               ┌─────────▼─────────┐               ← L3 gateway за всички VLAN-и
-               │ pfSense/RouterOS  │               • pfBlockerNG / RPZ
-               │ Firewall          │               • Syslog / NetFlow
-               │ • DHCP + DNS      │
-               │   (Unbound)       │
-               │ • Squid (optional)│
-               └─────────┬─────────┘
-                         │ LAN (802.1Q trunk)
-               ┌─────────▼─────────┐
-               │  Managed L2 Switch│
-               └─────────┬─────────┘
-                         │
-             ┌───────────┼────────────┬────────────┬────────────┬────────────┐
-             │           │            │            │            │            │
-        ┌────┴─────┐ ┌───┴──────┐ ┌───┴──────┐ ┌───┴──────┐ ┌───┴──────┐
-        │  VLAN 10 │ │ VLAN110  │ │ VLAN120  │ │ VLAN130  │ │ VLAN910  │
-        │10.0.0.0/24│ │10.10.0.0/24│ │10.20.0.0/24│ │10.30.0.0/24│ │192.168.10.0/24│
-        │  Servers │ │  DeptA   │ │  DeptB   │ │  Guests  │ │  Admin   │
-        └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘
+![Segmentation & Control – Network Diagram](diagram_sysadmin.png)
+
+Забележки:
+- Диаграмата визуализира Internet → Edge firewall/router → Managed L2 switch → пет VLAN-а (10.0.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24, 192.168.10.0/24) с 802.1Q tagging.
+- Показани са: default inter‑VLAN DROP, DHCP с IP↔MAC резервиране, 802.1X/MAB, VLAN‑aware SSID, Guests → WAN only (BLOCK RFC1918), Admin → full access, DNS filtering/pfBlockerNG, Squid, Syslog/NetFlow, LAG и CARP/VRRP (optional).
+- В текста по‑долу остават примерните ACLи (DeptA→DeptB pinholes и др.).
 
   Допълнителни услуги/разположения:
   • RADIUS (FreeRADIUS) в Servers/Admin VLAN за 802.1X/MAB (порт-базова автентикация)
