@@ -1,33 +1,34 @@
-Weather And SysAdmin Solution
+Weather & SysAdmin – Решение
 
-Overview
-- Implements the Weather tasks in five separate folders (as requested) and the SysAdmin network design.
-- Uses OpenWeatherMap (Current Weather API v2.5 + Geocoding v1.0).
+Общ преглед
+- Пет отделни папки за всеки таск (както е изискано) + отделна папка със SysAdmin решение.
+- Ползва се OpenWeatherMap (Current Weather API v2.5 + Geocoding v1.0) като единствен доставчик.
 
-Setup
-- Requirements: Python 3.10+
-- From this folder:
-  - Create venv: `python -m venv .venv && source .venv/bin/activate` (PowerShell: `.\\.venv\\Scripts\\Activate.ps1`)
-  - Install dependencies: `pip install -r requirements.txt`
-  - Create environment file:
-    - Either copy `env.example` (or `.env.example`) to `.env`,
-      or create a new `.env` with one line: `OPENWEATHERMAP_API_KEY=...`
+Инсталация (от корена на репото)
+- Изисквания: Python 3.10+
+- Създаване на виртуална среда:
+  - Linux/macOS: `python -m venv .venv && source .venv/bin/activate`
+  - Windows PowerShell: `py -m venv .venv` и после `.\\.venv\\Scripts\\Activate.ps1`
+- Инсталиране на зависимости: `pip install -r requirements.txt`
+- Настройка на ключ за време:
+  - Копирайте `env.example` (или `.env.example`) на `.env` и попълнете `OPENWEATHERMAP_API_KEY=...`,
+    или създайте `.env` с един ред: `OPENWEATHERMAP_API_KEY=...`
 
-Run (per task)
-- Task 1 (CLI): `python tasks/task1_cli/weather_cli.py`
-- Task 2 (Tk GUI): `python tasks/task2_tk/app.py` (headless: `--smoketest`)
-- Task 3 (Flask): `FLASK_APP=tasks/task3_flask/app.py flask run -p 5001`
-- Task 4 (Django, no DB persistence):
-  - `python tasks/task4_django/manage.py migrate`  (sets up Django’s built‑in tables; Task 4 doesn’t store weather data)
+Стартиране по таскове
+- Таск 1 (CLI): `python tasks/task1_cli/weather_cli.py`
+- Таск 2 (Tk GUI): `python tasks/task2_tk/app.py` (в headless среда може `--smoketest`)
+- Таск 3 (Flask): `FLASK_APP=tasks/task3_flask/app.py flask run -p 5001`
+- Таск 4 (Django, без персистентност на данни):
+  - `python tasks/task4_django/manage.py migrate` (инициализира системните таблици на Django)
   - `python tasks/task4_django/manage.py runserver 5003`
-- Task 5 (Django + DB, compare last 10):
-  - `python tasks/task5_django_db/manage.py migrate`  (creates `tasks/task5_django_db/db.sqlite3`)
+- Таск 5 (Django + БД, сравнение на последните 10):
+  - `python tasks/task5_django_db/manage.py migrate` (създава `tasks/task5_django_db/db.sqlite3`)
   - `python tasks/task5_django_db/manage.py runserver 5005`
 
-Folders
+Структура
 - `tasks/task1_cli/`
 - `tasks/task2_tk/`
 - `tasks/task3_flask/`
 - `tasks/task4_django/`
 - `tasks/task5_django_db/`
-- `sysadmin_task/`: network segmentation solution (Bulgarian)
+- `sysadmin_task/` – решение за сегментация на мрежи (на български)
