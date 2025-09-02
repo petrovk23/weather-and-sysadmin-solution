@@ -7,16 +7,16 @@ Junior SysAdmin Task – Network Segmentation and Control
 - Подбор на хардуер, ОС, технологии и инструменти + схема
 
 Архитектура (високо ниво)
-- L3 граничен рутер/фаеруол с VLAN-и и междумрежови правила (ACL/Firewall)
-- Управляем L2 суич(ове) с 802.1Q VLAN tagging
-- Безжични точки с VLAN SSID map (ако е приложимо)
+- L3 edge router/firewall с VLAN-и и междумрежови правила (ACL/Firewall)
+- Managed L2 switch(es) с 802.1Q VLAN tagging
+- Wireless APs с VLAN SSID map (ако е приложимо)
 - Централизиран DHCP сървър с резервации (IP-MAC binding) за всяка машина
 - (Опционално) 802.1X/MAB за порт-базирана автентикация
 - DNS филтриране/прокси за контрол на Интернет
 
 Препоръчан хардуер / софтуер
-- Граничен фаеруол/рутер: Netgate 6100 (pfSense Plus) или MikroTik RB4011 (RouterOS)
-- Суич: 1× Managed L2 (например TP-Link Omada, MikroTik CRS, Ubiquiti)
+- Edge firewall/router: Netgate 6100 (pfSense Plus) или MikroTik RB4011 (RouterOS)
+- Switch: 1× Managed L2 (например TP-Link Omada, MikroTik CRS, Ubiquiti)
 - AP: UniFi 6 Lite/Pro или Omada, с VLAN‑aware SSID
 - ОС/Платформа: pfSense CE/Plus (FreeBSD) или RouterOS; алтернатива OpenWrt
 - Инструменти: DHCP (вграден), DNS филтър (pfBlockerNG/Unbound + RPZ, Pi‑hole), FreeRADIUS (802.1X), syslog, NTP
@@ -27,41 +27,41 @@ Junior SysAdmin Task – Network Segmentation and Control
 - VLAN 120 → 10.20.0.0/24
 - VLAN 130 → 10.30.0.0/24
 - VLAN 910 → 192.168.10.0/24
-Всеки VLAN има SVI/интерфейс на фаеруола: 10.x.0.1/24 (или 192.168.10.1/24)
+Всеки VLAN има SVI/интерфейс на firewall-а: 10.x.0.1/24 (или 192.168.10.1/24)
 
 Схема (ASCII, уточнена)
 
-                 ┌───────────────┐
-                 │    Internet   │
-                 └───────┬───────┘
-                         │ WAN
-                 ┌───────▼───────────────┐
-                 │ pfSense / RouterOS FW │  ← L3 gateway за всички VLAN-и
-                 │  • DHCP + DNS (Unbound)│  • pfBlockerNG / RPZ
-                 │  • Squid (по желание)  │  • Syslog/NetFlow
-                 └───────┬───────────────┘
-                         │ LAN (802.1Q trunk)
-                 ┌───────▼───────────────┐
-                 │    Managed L2 Switch  │
-                 └┬─────┬─────┬─────┬────┘
-    access port → │     │     │     │
-                  │     │     │     │
-        ┌─────────▼┐ ┌──▼─────┐ ┌───▼──────┐ ┌───▼───────┐ ┌───▼──────────┐
-        │ VLAN 10  │ │ VLAN110│ │ VLAN120  │ │ VLAN130   │ │ VLAN910      │
-        │10.0.0.0/24│ │10.10.0.0/24│10.20.0.0/24│10.30.0.0/24│192.168.10.0/24│
-        │ Servers   │ │ DeptA  │ │ DeptB    │ │ Guests    │ │ Admin        │
-        └────┬──────┘ └──┬─────┘ └───┬──────┘ └───┬───────┘ └───┬──────────┘
-             │            │            │            │              │
-       [App/DB]     [PCs/Printers]   [PCs]       [AP SSID]    [IT/Admin PCs]
+                  +-------------------+
+                  |     Internet      |
+                  +----------+--------+
+                             | WAN
+                  +----------v-------------------------+
+                  | pfSense / RouterOS Firewall        |  ← L3 gateway за всички VLAN-и
+                  |  - DHCP + DNS (Unbound)            |  - pfBlockerNG / RPZ
+                  |  - Squid (optional)                |  - Syslog / NetFlow
+                  +----------+-------------------------+
+                             | LAN (802.1Q trunk)
+                  +----------v----------------+
+                  |     Managed L2 Switch    |
+                  +--+-----+-----+-----+-----+
+                     |     |     |     |
+                     |     |     |     |
+         +-----------v+  +--v-----+  +--v-----+  +--v-----+  +--v------+
+         |  VLAN 10   |  |VLAN110|  |VLAN120|  |VLAN130|  |VLAN910  |
+         | 10.0.0.0/24|  |10.10..|  |10.20..|  |10.30..|  |192.168..|
+         |  Servers    |  | DeptA |  | DeptB |  | Guests|  | Admin   |
+         +------^------+  +---^---+  +---^---+  +---^---+  +---^----+
+                |             |          |          |          |
+           [App/DB]   [PCs/Printers]    [PCs]     [AP SSID]  [IT/Admin PCs]
 
   Допълнителни услуги/разположения:
   • RADIUS (FreeRADIUS) в Servers/Admin VLAN за 802.1X/MAB (порт-базова автентикация)
   • Pi-hole/Proxy (Squid) в отделен VLAN или на FW; Guests → WAN only (RFC1918 BLOCK)
-  • ЛАГ/агрегиране по желание между FW ↔ Switch; CARP/VRRP за HA (по желание)
+  • LAG/Link aggregation (optional) между FW ↔ Switch; CARP/VRRP за HA (optional)
 
 
 DHCP + IP/MAC фиксации
-- За всяка машина: статичен lease (MAC → фиксиран IP) в DHCP на фаеруола
+- За всяка машина: статичен lease (MAC → фиксиран IP) в DHCP на firewall-а
 - Enforce static ARP (по желание) за критични сегменти
 - DNS: различни профили по VLAN (например, филтри за Guests)
 
@@ -76,7 +76,7 @@ DHCP + IP/MAC фиксации
 - IP/MAC специфични правила: alias групи по MAC/IP; правила „source = host_X, MAC = mac_X“
 - Логване на блокирания трафик за одит
 
-Забележка: pfSense по подразбиране има allow правило на LAN-подобни интерфейси – изрично изградете deny-by-default политика на всеки VLAN интерфейс. Съпоставянето по MAC е валидно на входящия интерфейс (след рутиране MAC се променя), затова го прилагайте на съответния VLAN.
+Забележка: pfSense по подразбиране има allow правило на LAN-подобни интерфейси – изрично изградете deny-by-default политика на всеки VLAN интерфейс. Съпоставянето по MAC е валидно на входящия интерфейс (след routing MAC се променя), затова го прилагайте на съответния VLAN.
 
 Контрол на Интернет
 - DNS филтри (pfBlockerNG/Unbound RPZ; алтернатива Pi‑hole в отделен VLAN)
@@ -92,14 +92,14 @@ Guests → WAN only: изрично BLOCK към RFC1918 (10.0.0.0/8, 172.16/12,
 - На портовете без 802.1X → lock по MAC + DHCP reservations
 
 Мониторинг и одит
-- Централизиран syslog (фаеруол, суич, AP)
-- NetFlow/Traffic accounting (на фаеруола)
+- Централизиран syslog (firewall, switch, AP)
+- NetFlow/Traffic accounting (на firewall-а)
 - SmokePing/ICMP мониторинг към критични адреси
 
 Стъпки за реализация
 1) Проектиране на VLAN-и и адресиране; дефиниране на роли/групи
-2) Конфигурация на фаеруола: SVI интерфейси, DHCP scopes + reservations, DNS/NTP
-3) Конфигурация на L2 суич: trunk към фаеруол, access портове по VLAN, 802.1Q
+2) Конфигурация на firewall-а: SVI интерфейси, DHCP scopes + reservations, DNS/NTP
+3) Конфигурация на L2 switch: trunk към firewall, access портове по VLAN, 802.1Q
 4) (Опц.) FreeRADIUS + 802.1X/MAB; dynamic VLAN
 5) Firewall policy: „deny any“ по подразбиране между VLAN-и; добавяне на разрешителни ACL по роли/IP/MAC
 6) Интернет политики: DNS филтри, прокси (ако е нужно), правила по време, rate limits
