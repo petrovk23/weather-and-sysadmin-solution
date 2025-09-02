@@ -31,28 +31,28 @@ Junior SysAdmin Task – Network Segmentation and Control
 
 Схема (ASCII, уточнена)
 
-                  +-------------------+
-                  |     Internet      |
-                  +----------+--------+
-                             | WAN
-                  +----------v-------------------------+       ← L3 gateway за всички VLAN-и
-                  | pfSense / RouterOS Firewall        |       - pfBlockerNG / RPZ
-                  |  - DHCP + DNS (Unbound)            |       - Syslog / NetFlow
-                  |  - Squid (optional)                |
-                  +----------+-------------------------+
-                             | LAN (802.1Q trunk)
-                  +----------v----------------+
-                  |     Managed L2 Switch    |
-                  +---+----------+-----------+---+----------+---+
-                      |          |               |          |
-                      |          |               |          |
-          +-----------v--+   +---v-----------+   +--v-----------+   +--v-----------+   +--v-------------+
-          | VLAN 10      |   | VLAN110       |   | VLAN120      |   | VLAN130      |   | VLAN910        |
-          | 10.0.0.0/24  |   | 10.10.0.0/24  |   | 10.20.0.0/24 |   | 10.30.0.0/24 |   | 192.168.10.0/24|
-          | Servers      |   | DeptA         |   | DeptB        |   | Guests       |   | Admin          |
-          +------^-------+   +------^--------+   +------^-------+   +------^-------+   +------^---------+
-                 |                  |                   |                 |                    |
-             [App/DB]        [PCs/Printers]          [PCs]             [AP SSID]         [IT/Admin PCs]
+               ┌───────────────────┐
+               │     Internet      │
+               └─────────┬─────────┘
+                         │ WAN
+               ┌─────────▼─────────┐               ← L3 gateway за всички VLAN-и
+               │ pfSense/RouterOS  │               • pfBlockerNG / RPZ
+               │ Firewall          │               • Syslog / NetFlow
+               │ • DHCP + DNS      │
+               │   (Unbound)       │
+               │ • Squid (optional)│
+               └─────────┬─────────┘
+                         │ LAN (802.1Q trunk)
+               ┌─────────▼─────────┐
+               │  Managed L2 Switch│
+               └─┬───────┬───────┬─┬───────┬─┘
+                 │       │       │ │       │
+                 │       │       │ │       │
+      ┌──────────▼┐ ┌────▼──────┐ ┌▼───────┐ ┌▼───────┐ ┌▼────────┐
+      │ VLAN 10   │ │ VLAN110   │ │ VLAN120│ │ VLAN130│ │ VLAN910 │
+      │ 10.0.0.0/24││ 10.10.0.0/24││10.20.0.0/24││10.30.0.0/24││192.168.10.0/24│
+      │ Servers   │ │ DeptA     │ │ DeptB  │ │ Guests │ │ Admin  │
+      └───────────┘ └───────────┘ └────────┘ └────────┘ └────────┘
 
   Допълнителни услуги/разположения:
   • RADIUS (FreeRADIUS) в Servers/Admin VLAN за 802.1X/MAB (порт-базова автентикация)
