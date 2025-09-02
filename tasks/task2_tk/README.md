@@ -1,14 +1,14 @@
-Task 2 – Tkinter GUI (OpenWeatherMap)
+Таск 2 – Tkinter GUI (OpenWeatherMap)
 
-Setup
+Инсталация
 - Python 3.10+
-- From the repository root:
-  - Create venv: `python -m venv .venv && source .venv/bin/activate` (PowerShell: `.\\.venv\\Scripts\\Activate.ps1`)
-  - Install deps: `pip install -r requirements.txt`
-  - Create `.env`:
-    - Copy `env.example` (or `.env.example`) to `.env`, then set `OPENWEATHERMAP_API_KEY=...`
-    - Or create `.env` manually with one line: `OPENWEATHERMAP_API_KEY=...`
+- От корена на репото:
+  - Създайте venv: `python -m venv .venv && source .venv/bin/activate` (PowerShell: `.\\.venv\\Scripts\\Activate.ps1`)
+  - Инсталирайте зависимости: `pip install -r requirements.txt`
+  - Настройте `.env`:
+    - Копирайте `env.example` (или `.env.example`) на `.env` и попълнете `OPENWEATHERMAP_API_KEY=...`,
+      или създайте `.env` с един ред: `OPENWEATHERMAP_API_KEY=...`
 
-Run
-- Launch GUI: `python tasks/task2_tk/app.py`
-- Headless verification: `python tasks/task2_tk/app.py --smoketest`
+Стартиране
+- Графичен интерфейс: `python tasks/task2_tk/app.py`
+- Headless проверка: `python tasks/task2_tk/app.py --smoketest`
