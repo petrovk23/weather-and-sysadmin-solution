@@ -29,19 +29,35 @@ Junior SysAdmin Task – Network Segmentation and Control
 - VLAN 910 → 192.168.10.0/24
 Всеки VLAN има SVI/интерфейс на фаеруола: 10.x.0.1/24 (или 192.168.10.1/24)
 
-Схема (ASCII)
+Схема (ASCII, уточнена)
 
-            Internet
-               |
-         [WAN on FW]
-               |
-        [FW/L3 Router]
-        |   |   |   |
-       Trk Trk Trk Trk  (802.1Q trunk към L2 суич)
-               |
-           [L2 Switch]
-        | VLAN10 | VLAN110 | VLAN120 | VLAN130 | VLAN910
-        |  PCs   |  DeptA  |  DeptB  |  Guests |  Admin
+                 ┌───────────────┐
+                 │    Internet   │
+                 └───────┬───────┘
+                         │ WAN
+                 ┌───────▼───────────────┐
+                 │ pfSense / RouterOS FW │  ← L3 gateway за всички VLAN-и
+                 │  • DHCP + DNS (Unbound)│  • pfBlockerNG / RPZ
+                 │  • Squid (по желание)  │  • Syslog/NetFlow
+                 └───────┬───────────────┘
+                         │ LAN (802.1Q trunk)
+                 ┌───────▼───────────────┐
+                 │    Managed L2 Switch  │
+                 └┬─────┬─────┬─────┬────┘
+    access port → │     │     │     │
+                  │     │     │     │
+        ┌─────────▼┐ ┌──▼─────┐ ┌───▼──────┐ ┌───▼───────┐ ┌───▼──────────┐
+        │ VLAN 10  │ │ VLAN110│ │ VLAN120  │ │ VLAN130   │ │ VLAN910      │
+        │10.0.0.0/24│ │10.10.0.0/24│10.20.0.0/24│10.30.0.0/24│192.168.10.0/24│
+        │ Servers   │ │ DeptA  │ │ DeptB    │ │ Guests    │ │ Admin        │
+        └────┬──────┘ └──┬─────┘ └───┬──────┘ └───┬───────┘ └───┬──────────┘
+             │            │            │            │              │
+       [App/DB]     [PCs/Printers]   [PCs]       [AP SSID]    [IT/Admin PCs]
+
+  Допълнителни услуги/разположения:
+  • RADIUS (FreeRADIUS) в Servers/Admin VLAN за 802.1X/MAB (порт-базова автентикация)
+  • Pi-hole/Proxy (Squid) в отделен VLAN или на FW; Guests → WAN only (RFC1918 BLOCK)
+  • ЛАГ/агрегиране по желание между FW ↔ Switch; CARP/VRRP за HA (по желание)
 
 
 DHCP + IP/MAC фиксации
@@ -60,11 +76,15 @@ DHCP + IP/MAC фиксации
 - IP/MAC специфични правила: alias групи по MAC/IP; правила „source = host_X, MAC = mac_X“
 - Логване на блокирания трафик за одит
 
+Забележка: pfSense по подразбиране има allow правило на LAN-подобни интерфейси – изрично изградете deny-by-default политика на всеки VLAN интерфейс. Съпоставянето по MAC е валидно на входящия интерфейс (след рутиране MAC се променя), затова го прилагайте на съответния VLAN.
+
 Контрол на Интернет
 - DNS филтри (pfBlockerNG/Unbound RPZ; алтернатива Pi‑hole в отделен VLAN)
 - Layer 7 прокси (Squid) за allow/deny списъци и категории (по отделни VLAN-и)
 - Time‑based правила (например Guests позволени 08:00–20:00)
 - Rate limiting/queue (HFSC/FQ‑CoDel) за гарантирани скорости per VLAN
+
+Guests → WAN only: изрично BLOCK към RFC1918 (10.0.0.0/8, 172.16/12, 192.168/16), ALLOW само към WAN (80/443/53/123).
 
 Достъп по потребителски роли
 - 802.1X (dot1x) или MAC Authentication Bypass на суича
@@ -98,4 +118,3 @@ DHCP + IP/MAC фиксации
 - Backup на конфигурацията (фаеруол/суич) и version control (например Ansible playbooks)
 - RBAC на фаеруола; MFA за администратори
 - Документация: диаграми, таблици с IP/MAC/потребители
-
