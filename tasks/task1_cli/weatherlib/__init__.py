@@ -1,6 +1,7 @@
 try:
     from dotenv import load_dotenv  # type: ignore
-    load_dotenv()
+    from dotenv import find_dotenv  # type: ignore
+    load_dotenv(find_dotenv(), override=False)
 except Exception:
     pass
 
@@ -17,4 +18,3 @@ __all__ = [
     "DEFAULT_CITIES",
     "OpenWeatherMapProvider",
 ]
-
