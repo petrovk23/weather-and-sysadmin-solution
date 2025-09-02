@@ -29,26 +29,16 @@ Junior SysAdmin Task – Network Segmentation and Control
 - VLAN 910 → 192.168.10.0/24
 Всеки VLAN има SVI/интерфейс на firewall-а: 10.x.0.1/24 (или 192.168.10.1/24)
 
-Диаграма (финална)
+Диаграма
 
 ![Segmentation & Control – Network Diagram (PNG)](diagram_sysadmin.png)
-
-Това е одобреното визуално представяне на решението и замества по‑старите ASCII схеми. SVG вариант повече не се поддържа.
 
 Забележки:
 - Диаграмата визуализира Internet → Edge firewall/router → Managed L2 switch → пет VLAN-а (10.0.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24, 192.168.10.0/24) с 802.1Q tagging.
 - Показани са: default inter‑VLAN DROP, DHCP с IP↔MAC резервиране, 802.1X/MAB, VLAN‑aware SSID, Guests → WAN only (BLOCK RFC1918), Admin → full access, DNS filtering/pfBlockerNG, Squid, Syslog/NetFlow, LAG и CARP/VRRP (optional).
 - В текста по‑долу остават примерните ACLи (DeptA→DeptB pinholes и др.).
 
-Уточнения към диаграмата
-- 802.1X: ако в изображението виждате „802.X“, приемете го като „802.1X“ (типографска грешка в надписа). Самата технология е IEEE 802.1X.
-- Примерни pinhole правила: картинката показва илюстративно „ALLOW …, DNS/NTP“. Каноничните примери остават:
-  - Admin (192.168.10.0/24) → any: ALLOW
-  - DeptA (10.10.0.0/24) → 10.20.0.50:443 и 10.20.0.60:5432: ALLOW (останалото DROP)
-  - DeptB (10.20.0.0/24) → 10.0.0.10:445 + DNS/NTP: ALLOW (останалото DROP)
-  - Guests (10.30.0.0/24) → WAN only; BLOCK към RFC1918
-  Т.е. „ALLOW към 10.20.0.50 …“ в изображението е само пример; политиката по подразбиране между VLAN-ите е DROP и се отварят само конкретните нужни портове/хостове, както е описано горе.
-
+  
   Допълнителни услуги/разположения:
   • RADIUS (FreeRADIUS) в Servers/Admin VLAN за 802.1X/MAB (порт-базова автентикация)
   • Pi-hole/Proxy (Squid) в отделен VLAN или на FW; Guests → WAN only (RFC1918 BLOCK)
