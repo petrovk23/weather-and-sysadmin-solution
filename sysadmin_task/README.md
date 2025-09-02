@@ -33,9 +33,7 @@ Junior SysAdmin Task – Network Segmentation and Control
 
 ![Segmentation & Control – Network Diagram (PNG)](diagram_sysadmin.png)
 
-Това е одобреното визуално представяне на решението и замества по‑старите ASCII схеми.
-
-SVG версия за скалиране: [diagram_sysadmin.svg](diagram_sysadmin.svg)
+Това е одобреното визуално представяне на решението и замества по‑старите ASCII схеми. SVG вариант повече не се поддържа.
 
 Забележки:
 - Диаграмата визуализира Internet → Edge firewall/router → Managed L2 switch → пет VLAN-а (10.0.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24, 192.168.10.0/24) с 802.1Q tagging.
