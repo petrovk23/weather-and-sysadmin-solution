@@ -29,9 +29,11 @@ Junior SysAdmin Task – Network Segmentation and Control
 - VLAN 910 → 192.168.10.0/24
 Всеки VLAN има SVI/интерфейс на firewall-а: 10.x.0.1/24 (или 192.168.10.1/24)
 
-Диаграма
+Диаграма (финална)
 
 ![Segmentation & Control – Network Diagram (PNG)](diagram_sysadmin.png)
+
+Това е одобреното визуално представяне на решението и замества по‑старите ASCII схеми.
 
 SVG версия за скалиране: [diagram_sysadmin.svg](diagram_sysadmin.svg)
 
