@@ -1,21 +1,21 @@
-Task 5 – Django With DB (Snapshots + Compare)
+Таск 5 – Django с БД (Снимки + Сравнение)
 
-Setup
+Инсталация
 - Python 3.10+
-- From the repository root:
-  - Create venv: `python -m venv .venv && source .venv/bin/activate` (PowerShell: `.\\.venv\\Scripts\\Activate.ps1`)
-  - Install deps: `pip install -r requirements.txt`
-  - Create `.env`:
-    - Copy `env.example` (or `.env.example`) to `.env`, then set `OPENWEATHERMAP_API_KEY=...`
-    - Or create `.env` manually with one line: `OPENWEATHERMAP_API_KEY=...`
+- От корена на репото:
+  - Създайте venv: `python -m venv .venv && source .venv/bin/activate` (PowerShell: `.\\.venv\\Scripts\\Activate.ps1`)
+  - Инсталирайте зависимости: `pip install -r requirements.txt`
+  - Настройте `.env`:
+    - Копирайте `env.example` (или `.env.example`) на `.env` и попълнете `OPENWEATHERMAP_API_KEY=...`,
+      или създайте `.env` с един ред: `OPENWEATHERMAP_API_KEY=...`
 
-Run
-- Initialize DB schema: `python tasks/task5_django_db/manage.py migrate`
-  - This creates the SQLite database file at `tasks/task5_django_db/db.sqlite3`.
-- Start server: `python tasks/task5_django_db/manage.py runserver 5005`
-- Open: http://127.0.0.1:5005
+Стартиране
+- Инициализирайте схемата: `python tasks/task5_django_db/manage.py migrate`
+  - Това създава SQLite файла `tasks/task5_django_db/db.sqlite3`.
+- Стартирайте сървъра: `python tasks/task5_django_db/manage.py runserver 5005`
+- Отворете: http://127.0.0.1:5005
 
-Features
-- Refresh: stores 5 random city readings (Snapshot + WeatherRecord rows)
-- Search: on-demand query without persisting
-- Compare: last 10 values for a city with simple charts
+Функционалности
+- Refresh: записва 5 случайни града (Snapshot + WeatherRecord записи)
+- Search: заявка по град без запис в БД
+- Compare: последните 10 стойности за град с прости графики
