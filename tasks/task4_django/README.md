@@ -1,16 +1,16 @@
-Task 4 – Django Web (no DB persistence)
+Таск 4 – Django Web (без персистентност на метео данни)
 
-Setup
+Инсталация
 - Python 3.10+
-- From the repository root:
-  - Create venv: `python -m venv .venv && source .venv/bin/activate` (PowerShell: `.\\.venv\\Scripts\\Activate.ps1`)
-  - Install deps: `pip install -r requirements.txt`
-  - Create `.env`:
-    - Copy `env.example` (or `.env.example`) to `.env`, then set `OPENWEATHERMAP_API_KEY=...`
-    - Or create `.env` manually with one line: `OPENWEATHERMAP_API_KEY=...`
+- От корена на репото:
+  - Създайте venv: `python -m venv .venv && source .venv/bin/activate` (PowerShell: `.\\.venv\\Scripts\\Activate.ps1`)
+  - Инсталирайте зависимости: `pip install -r requirements.txt`
+  - Настройте `.env`:
+    - Копирайте `env.example` (или `.env.example`) на `.env` и попълнете `OPENWEATHERMAP_API_KEY=...`,
+      или създайте `.env` с един ред: `OPENWEATHERMAP_API_KEY=...`
 
-Run
-- Initialize Django system tables: `python tasks/task4_django/manage.py migrate`
-  - This sets up Django’s built-in tables; Task 4 itself does not store weather data.
-- Start server: `python tasks/task4_django/manage.py runserver 5003`
-- Open: http://127.0.0.1:5003
+Стартиране
+- Инициализирайте системните таблици: `python tasks/task4_django/manage.py migrate`
+  - Този таск не записва метео данни; създават се само стандартните таблици на Django.
+- Стартирайте сървъра: `python tasks/task4_django/manage.py runserver 5003`
+- Отворете: http://127.0.0.1:5003
