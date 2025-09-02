@@ -31,7 +31,7 @@ Junior SysAdmin Task – Network Segmentation and Control
 
 Диаграма
 
-![Segmentation & Control – Network Diagram](diagram_sysadmin.png)
+![Segmentation & Control – Network Diagram](diagram_sysadmin.svg)
 
 Забележки:
 - Диаграмата визуализира Internet → Edge firewall/router → Managed L2 switch → пет VLAN-а (10.0.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24, 192.168.10.0/24) с 802.1Q tagging.
