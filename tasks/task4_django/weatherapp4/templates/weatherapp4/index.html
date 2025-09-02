@@ -41,10 +41,9 @@
       {% if summary.coldest and summary.avg_temp_c is not none %}
       <div class="alert alert-info">
         Coldest: <strong>{{ summary.coldest.city }}</strong> ({{ summary.coldest.temperature_c }}°C)
-        &nbsp;•&nbsp; Average: <strong>{{ '%.1f'|format(summary.avg_temp_c) }}°C</strong>
+        &nbsp;•&nbsp; Average: <strong>{{ summary.avg_temp_c|floatformat:1 }}°C</strong>
       </div>
       {% endif %}
     </div>
   </body>
   </html>
-
