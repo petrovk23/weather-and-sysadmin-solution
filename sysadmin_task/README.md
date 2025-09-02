@@ -35,24 +35,24 @@ Junior SysAdmin Task – Network Segmentation and Control
                   |     Internet      |
                   +----------+--------+
                              | WAN
-                  +----------v-------------------------+
-                  | pfSense / RouterOS Firewall        |  ← L3 gateway за всички VLAN-и
-                  |  - DHCP + DNS (Unbound)            |  - pfBlockerNG / RPZ
-                  |  - Squid (optional)                |  - Syslog / NetFlow
+                  +----------v-------------------------+       ← L3 gateway за всички VLAN-и
+                  | pfSense / RouterOS Firewall        |       - pfBlockerNG / RPZ
+                  |  - DHCP + DNS (Unbound)            |       - Syslog / NetFlow
+                  |  - Squid (optional)                |
                   +----------+-------------------------+
                              | LAN (802.1Q trunk)
                   +----------v----------------+
                   |     Managed L2 Switch    |
-                  +--+-----+-----+-----+-----+
-                     |     |     |     |
-                     |     |     |     |
-         +-----------v+  +--v-----+  +--v-----+  +--v-----+  +--v------+
-         |  VLAN 10   |  |VLAN110|  |VLAN120|  |VLAN130|  |VLAN910  |
-         | 10.0.0.0/24|  |10.10..|  |10.20..|  |10.30..|  |192.168..|
-         |  Servers    |  | DeptA |  | DeptB |  | Guests|  | Admin   |
-         +------^------+  +---^---+  +---^---+  +---^---+  +---^----+
-                |             |          |          |          |
-           [App/DB]   [PCs/Printers]    [PCs]     [AP SSID]  [IT/Admin PCs]
+                  +---+----------+-----------+---+----------+---+
+                      |          |               |          |
+                      |          |               |          |
+          +-----------v--+   +---v-----------+   +--v-----------+   +--v-----------+   +--v-------------+
+          | VLAN 10      |   | VLAN110       |   | VLAN120      |   | VLAN130      |   | VLAN910        |
+          | 10.0.0.0/24  |   | 10.10.0.0/24  |   | 10.20.0.0/24 |   | 10.30.0.0/24 |   | 192.168.10.0/24|
+          | Servers      |   | DeptA         |   | DeptB        |   | Guests       |   | Admin          |
+          +------^-------+   +------^--------+   +------^-------+   +------^-------+   +------^---------+
+                 |                  |                   |                 |                    |
+             [App/DB]        [PCs/Printers]          [PCs]             [AP SSID]         [IT/Admin PCs]
 
   Допълнителни услуги/разположения:
   • RADIUS (FreeRADIUS) в Servers/Admin VLAN за 802.1X/MAB (порт-базова автентикация)
@@ -87,7 +87,7 @@ DHCP + IP/MAC фиксации
 Guests → WAN only: изрично BLOCK към RFC1918 (10.0.0.0/8, 172.16/12, 192.168/16), ALLOW само към WAN (80/443/53/123).
 
 Достъп по потребителски роли
-- 802.1X (dot1x) или MAC Authentication Bypass на суича
+- 802.1X (dot1x) или MAC Authentication Bypass на switch-а
 - FreeRADIUS (Users/Groups) → dynamic VLAN assignment (Guests/DeptA/DeptB/Admin)
 - На портовете без 802.1X → lock по MAC + DHCP reservations
 
@@ -115,6 +115,6 @@ Guests → WAN only: изрично BLOCK към RFC1918 (10.0.0.0/8, 172.16/12,
 - Specific host (MAC 00:11:22:33:44:55): ALLOW to Internet, BLOCK to internal
 
 Сигурност и поддръжка
-- Backup на конфигурацията (фаеруол/суич) и version control (например Ansible playbooks)
-- RBAC на фаеруола; MFA за администратори
+- Backup на конфигурацията (firewall/switch) и version control (например Ansible playbooks)
+- RBAC на firewall-а; MFA за администратори
 - Документация: диаграми, таблици с IP/MAC/потребители
