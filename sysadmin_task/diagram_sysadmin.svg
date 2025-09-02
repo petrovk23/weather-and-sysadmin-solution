@@ -95,6 +95,5 @@
   <text class="note" x="190" y="800">All other inter‑VLAN traffic: DROP (default deny). Apply time‑based rules / rate‑limits as needed.</text>
 
   <!-- Legend -->
-  <text class="note" x="170" y="845">Security & Control: ACLs/Firewall rules, DNS filtering, Web proxy (Squid), time‑based policies, rate limiting.</text>
+  <text class="note" x="170" y="845">Security &amp; Control: ACLs/Firewall rules, DNS filtering, Web proxy (Squid), time‑based policies, rate limiting.</text>
 </svg>
-
