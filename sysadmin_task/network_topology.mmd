@@ -1,0 +1,53 @@
+%% Network Segmentation Topology (High-Level)
+flowchart LR
+  Internet((Internet))
+
+  subgraph FW["Edge FW/Router (pfSense or MikroTik)"]
+    FWCore["SVIs + ACLs (deny-by-default)"]
+    DHCP["DHCP + IP↔MAC Reservations"]
+    DNSF["DNS Filter: Unbound+RPZ / pfBlockerNG or Pi-hole"]
+    SQ["Proxy: Squid (optional)"]
+    RADIUS["FreeRADIUS (802.1X/MAB)"]
+    MON["Syslog + NetFlow"]
+  end
+
+  Internet --> FWCore
+  FWCore --- DHCP
+  FWCore --- DNSF
+  FWCore --- SQ
+  FWCore --- RADIUS
+  FWCore --- MON
+
+  FWCore == 802.1Q Trunk ==> SW["Managed L2 Switch"]
+  SW -. VLAN SSIDs .-> AP["Wi‑Fi AP (VLAN‑aware)"]
+
+  subgraph VLAN10["VLAN 10 — 10.0.0.0/24 (Servers/Shared)"]
+    FS["FileSrv 10.0.0.10"]
+  end
+  subgraph VLAN110["VLAN 110 — 10.10.0.0/24 (DeptA)"]
+    A1["Hosts A (fixed IP/MAC)"]
+  end
+  subgraph VLAN120["VLAN 120 — 10.20.0.0/24 (DeptB)"]
+    B1["Hosts B (fixed IP/MAC)"]
+  end
+  subgraph VLAN130["VLAN 130 — 10.30.0.0/24 (Guests)"]
+    G1["Guests (WAN only)"]
+  end
+  subgraph VLAN910["VLAN 910 — 192.168.10.0/24 (Admin)"]
+    ADM["Admins"]
+  end
+
+  SW --> VLAN10
+  SW --> VLAN110
+  SW --> VLAN120
+  SW --> VLAN130
+  SW --> VLAN910
+
+  AP -.-> VLAN130
+  AP -.-> VLAN110
+  AP -.-> VLAN120
+
+  %% Notes:
+  %% - Guests: BLOCK to RFC1918; ALLOW only WAN (80/443/53/123)
+  %% - Optional: LAG FW<->SW; HA via CARP/VRRP
+
