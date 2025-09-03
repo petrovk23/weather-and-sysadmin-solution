@@ -22,6 +22,7 @@
         </div>
       </form>
 
+      {% if items %}
       <table class="table table-striped">
         <thead>
           <tr>
@@ -42,9 +43,12 @@
           {% endfor %}
         </tbody>
       </table>
+      {% else %}
+      <div id="empty-hint" class="alert alert-info">No data yet. Click Refresh.</div>
+      {% endif %}
 
       {% if summary and summary.coldest and summary.avg_temp_c is not none %}
-      <div class="alert alert-info">
+      <div id="summary-alert" class="alert alert-info">
         Coldest: <strong>{{ summary.coldest.city }}</strong> ({{ summary.coldest.temperature_c }}°C)
         &nbsp;•&nbsp; Average: <strong>{{ '%.1f'|format(summary.avg_temp_c) }}°C</strong>
       </div>
@@ -92,10 +96,13 @@
             window.addEventListener('pageshow', function () {
               var $btn = $form.find('button[type="submit"]');
               $btn.prop('disabled', false).text('Search');
-              // If returning without a refresh query, clear stale table/summary
+              // If returning without a refresh query, clear stale table/summary and show hint
               if (!/([?&])refresh=1\b/.test(window.location.search)) {
-                $('table.table tbody').empty();
-                $('.alert.alert-info').remove();
+                $('table.table').hide();
+                $('#summary-alert').remove();
+                if (!$('#empty-hint').length) {
+                  $form.after('<div id="empty-hint" class="alert alert-info">No data yet. Click Refresh.</div>');
+                }
               }
             });
           });
