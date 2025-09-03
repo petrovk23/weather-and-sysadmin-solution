@@ -31,9 +31,9 @@ Junior SysAdmin Task – Network Segmentation and Control
 
 Диаграма
 
-![Мрежова архитектура](../docs/network-segmentation/diagrams/architecture.png)
+![Мрежова архитектура](architecture.png)
 
-![Матрица на политики](../docs/network-segmentation/diagrams/policy-matrix.png)
+![Матрица на политики](policy-matrix.png)
 Забележки:
 - Диаграмата визуализира Internet → Edge firewall/router → Managed L2 switch → пет VLAN-а (10.0.0.0/24, 10.10.0.0/24, 10.20.0.0/24, 10.30.0.0/24, 192.168.10.0/24) с 802.1Q tagging.
 - Показани са: default inter‑VLAN DROP, DHCP с IP↔MAC резервиране, 802.1X/MAB, VLAN‑aware SSID, Guests → WAN only (BLOCK RFC1918), Admin → full access, DNS filtering/pfBlockerNG, Squid, Syslog/NetFlow, LAG и CARP/VRRP (optional).
