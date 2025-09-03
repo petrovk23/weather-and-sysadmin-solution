@@ -15,16 +15,13 @@ from collections import Counter
 
 
 def index(request):
-    # Show empty page by default. Only show data if user has pressed Refresh
-    # in this session (tracked by last_snapshot_id in the session).
-    snap_id = request.session.get('last_snapshot_id')
+    # Show empty page by default. Only show latest snapshot when explicitly requested
+    # via query parameter ?show=1 (set after a Refresh).
     records = []
-    if snap_id:
-        try:
-            snap = Snapshot.objects.get(id=snap_id)
+    if request.GET.get('show') == '1':
+        snap = Snapshot.objects.order_by('-created_at').first()
+        if snap:
             records = WeatherRecord.objects.filter(snapshot=snap).order_by('city')
-        except Snapshot.DoesNotExist:
-            records = []
 
     summary = None
     if records:
@@ -62,9 +59,9 @@ def refresh(request):
             humidity_percent=it.get('humidity_percent'),
             condition=it.get('condition'),
         )
-    # Remember this snapshot so index shows it; new visits without this flag stay empty
-    request.session['last_snapshot_id'] = snap.id
-    return redirect('index')
+    # After refreshing, show latest once using query parameter
+    from django.urls import reverse
+    return redirect(reverse('index') + '?show=1')
 
 
 def search(request):
@@ -77,8 +74,6 @@ def search(request):
         except Exception:
             return HttpResponse("OPENWEATHERMAP_API_KEY липсва или е невалиден. Добавете го в .env и рестартирайте.", status=500)
         res = get_current_weather(q, provider)
-    # Ensure going Back to index shows empty page
-    request.session.pop('last_snapshot_id', None)
     response = render(request, 'weatherapp5/search.html', {'q': q, 'res': res})
     response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response['Pragma'] = 'no-cache'

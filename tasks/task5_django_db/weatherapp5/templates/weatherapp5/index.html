@@ -10,13 +10,17 @@
     <div class="container py-4">
       <h1 class="mb-3">Weather – Latest Refresh</h1>
 
-      <div class="mb-3 d-flex gap-2">
-        <a class="btn btn-secondary" href="{% url 'refresh' %}">Refresh</a>
-        <form class="d-flex" action="{% url 'search' %}" method="get">
+      <form class="row g-2 mb-3" action="{% url 'search' %}" method="get">
+        <div class="col-sm-6">
           <input class="form-control" type="text" name="q" placeholder="Search city...">
-          <button class="btn btn-primary ms-2" type="submit">Search</button>
-        </form>
-      </div>
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+        <div class="col-auto">
+          <a class="btn btn-secondary" href="{% url 'refresh' %}">Refresh</a>
+        </div>
+      </form>
 
       {% if records %}
       <table class="table table-striped">
