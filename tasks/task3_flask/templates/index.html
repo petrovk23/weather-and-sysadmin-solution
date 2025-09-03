@@ -50,6 +50,46 @@
       </div>
       {% endif %}
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      (function () {
+        function onReady() {
+          var input = document.querySelector('form input[name="q"]');
+          if (input) {
+            try { input.focus(); input.select(); } catch (e) {}
+          }
+
+          var rows = document.querySelectorAll('table.table tbody tr');
+          var coldestIndex = -1, coldestTemp = Infinity;
+          rows.forEach(function (row, idx) {
+            var cell = row.querySelector('td:nth-child(3)');
+            if (!cell) return;
+            var val = parseFloat(cell.textContent);
+            if (!isNaN(val) && val < coldestTemp) { coldestTemp = val; coldestIndex = idx; }
+          });
+          if (coldestIndex >= 0) {
+            rows[coldestIndex].classList.add('table-warning');
+            rows[coldestIndex].setAttribute('title', 'Coldest city');
+          }
+        }
+        document.addEventListener('DOMContentLoaded', onReady);
+
+        if (window.jQuery) {
+          $(function () {
+            var $table = $('table.table');
+            $table.css('display', 'none').fadeIn(150);
+            $table.on('mouseenter', 'tbody tr', function () { $(this).addClass('table-active'); })
+                  .on('mouseleave', 'tbody tr', function () { $(this).removeClass('table-active'); });
+
+            var $form = $('form[action="/search"]');
+            $form.on('submit', function () {
+              var $btn = $(this).find('button[type="submit"]');
+              $btn.prop('disabled', true)
+                  .html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Searching...');
+            });
+          });
+        }
+      })();
+    </script>
   </body>
   </html>
-

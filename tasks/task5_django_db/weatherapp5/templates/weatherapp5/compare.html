@@ -29,6 +29,14 @@
           </div>
         </div>
       </div>
+      <div class="row g-4 mt-1">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">Conditions (last 10)</div>
+            <div class="card-body"><canvas id="condChart" height="240"></canvas></div>
+          </div>
+        </div>
+      </div>
       <script>
         const labels = [{% for r in records %}'{{ r.created_at|date:"H:i:s" }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
         const temps = [{% for r in records %}{{ r.temperature_c|default:'null' }}{% if not forloop.last %}, {% endif %}{% endfor %}];
@@ -41,9 +49,37 @@
           type: 'line', data: { labels, datasets: [{ label: 'Humidity (%)', data: hums, borderColor: 'blue' }]},
           options: { responsive: true, maintainAspectRatio: false }
         });
+        const condLabels = [{% for s in cond_labels %}'{{ s|escapejs }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+        const condCounts = [{% for v in cond_values %}{{ v }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+        const condColors = [{% for c in cond_colors %}'{{ c }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+        if (condLabels.length) {
+          new Chart(document.getElementById('condChart'), {
+            type: 'bar',
+            data: {
+              labels: condLabels,
+              datasets: [{
+                label: 'Count',
+                data: condCounts,
+                backgroundColor: condColors,
+                borderColor: condColors,
+                borderWidth: 1,
+                barThickness: 16,
+                maxBarThickness: 18
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: true, ticks: { precision: 0 } },
+                x: { ticks: { autoSkip: false } }
+              }
+            }
+          });
+        }
       </script>
       {% endif %}
     </div>
   </body>
   </html>
-
