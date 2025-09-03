@@ -12,14 +12,21 @@ from weatherlib.weather import get_current_weather
 
 
 def index(request):
-    try:
-        provider = OpenWeatherMapProvider()
-    except Exception as e:
-        return HttpResponse("OPENWEATHERMAP_API_KEY липсва или е невалиден. Добавете го в .env и рестартирайте.", status=500)
-    cities = random_cities(DEFAULT_CITIES, 5)
-    items = fetch_cities_weather(cities, provider)
-    summary = summarize_cities(items)
-    return render(request, 'weatherapp4/index.html', {'items': items, 'summary': summary})
+    # Empty by default; only fetch on explicit refresh
+    items, summary = [], None
+    if request.GET.get('refresh') == '1':
+        try:
+            provider = OpenWeatherMapProvider()
+        except Exception as e:
+            return HttpResponse("OPENWEATHERMAP_API_KEY липсва или е невалиден. Добавете го в .env и рестартирайте.", status=500)
+        cities = random_cities(DEFAULT_CITIES, 5)
+        items = fetch_cities_weather(cities, provider)
+        summary = summarize_cities(items)
+    resp = render(request, 'weatherapp4/index.html', {'items': items, 'summary': summary})
+    resp["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    resp["Pragma"] = "no-cache"
+    resp["Expires"] = "0"
+    return resp
 
 
 def search(request):
@@ -31,4 +38,8 @@ def search(request):
     except Exception:
         return HttpResponse("OPENWEATHERMAP_API_KEY липсва или е невалиден. Добавете го в .env и рестартирайте.", status=500)
     res = get_current_weather(q, provider)
-    return render(request, 'weatherapp4/search.html', {'q': q, 'res': res})
+    resp = render(request, 'weatherapp4/search.html', {'q': q, 'res': res})
+    resp["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    resp["Pragma"] = "no-cache"
+    resp["Expires"] = "0"
+    return resp

@@ -18,7 +18,7 @@
           <button class="btn btn-primary" type="submit">Search</button>
         </div>
         <div class="col-auto">
-          <a class="btn btn-secondary" href="/">Refresh</a>
+          <a class="btn btn-secondary" href="/?refresh=1">Refresh</a>
         </div>
       </form>
 
@@ -43,7 +43,7 @@
         </tbody>
       </table>
 
-      {% if summary.coldest and summary.avg_temp_c is not none %}
+      {% if summary and summary.coldest and summary.avg_temp_c is not none %}
       <div class="alert alert-info">
         Coldest: <strong>{{ summary.coldest.city }}</strong> ({{ summary.coldest.temperature_c }}°C)
         &nbsp;•&nbsp; Average: <strong>{{ '%.1f'|format(summary.avg_temp_c) }}°C</strong>
@@ -86,6 +86,17 @@
               var $btn = $(this).find('button[type="submit"]');
               $btn.prop('disabled', true)
                   .html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Searching...');
+            });
+
+            // Reset spinner/state when returning via browser Back/Forward (bfcache)
+            window.addEventListener('pageshow', function () {
+              var $btn = $form.find('button[type="submit"]');
+              $btn.prop('disabled', false).text('Search');
+              // If returning without a refresh query, clear stale table/summary
+              if (!/([?&])refresh=1\b/.test(window.location.search)) {
+                $('table.table tbody').empty();
+                $('.alert.alert-info').remove();
+              }
             });
           });
         }
