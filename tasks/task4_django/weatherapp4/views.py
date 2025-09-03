@@ -32,7 +32,12 @@ def index(request):
 def search(request):
     q = request.GET.get('q', '').strip()
     if not q:
-        return redirect('index')
+        res = None
+        resp = render(request, 'weatherapp4/search.html', {'q': q, 'res': res})
+        resp["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        resp["Pragma"] = "no-cache"
+        resp["Expires"] = "0"
+        return resp
     try:
         provider = OpenWeatherMapProvider()
     except Exception:

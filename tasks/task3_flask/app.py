@@ -37,7 +37,12 @@ def index():
 def search():
     q = request.form.get("q", "").strip()
     if not q:
-        return redirect(url_for("index"))
+        # Show not-found the same way as Task 5 even for empty query
+        resp = make_response(render_template("search.html", q=q, res=None))
+        resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        resp.headers["Pragma"] = "no-cache"
+        resp.headers["Expires"] = "0"
+        return resp
     try:
         provider = OpenWeatherMapProvider()
     except Exception:

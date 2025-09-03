@@ -23,6 +23,19 @@
       </div>
       {% endif %}
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      (function(){
+        document.addEventListener('DOMContentLoaded', function(){
+          var back = document.querySelector('a[href="/"]');
+          if (back && back.focus) { try { back.focus(); } catch(e){} }
+        });
+        if (window.jQuery) {
+          $(function(){
+            $('.card, .alert').css('display','none').fadeIn(150);
+          });
+        }
+      })();
+    </script>
   </body>
   </html>
-
